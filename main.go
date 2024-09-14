@@ -56,8 +56,8 @@ func main() {
 	})
 
 	// Setup Swagger documentation
-	docs.SwaggerInfo.Title = "Supply Chain Retail API"
-	docs.SwaggerInfo.Description = "API untuk Supply Chain Retail"
+	docs.SwaggerInfo.Title = "Golang Backend Starter"
+	docs.SwaggerInfo.Description = "This is a sample server for Golang Backend Starter With Auth."
 	docs.SwaggerInfo.Version = "1.0"
 	docs.SwaggerInfo.Host = "localhost:8080"
 	docs.SwaggerInfo.BasePath = "/"
