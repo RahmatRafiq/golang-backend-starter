@@ -23,8 +23,9 @@ jobs:
 
     - name: Build
       run: |
+        cd backend
         go mod tidy
-        go build -o main .
+        go build -o main backend
 
     #- name: Test
      # run: go test -v ./...
