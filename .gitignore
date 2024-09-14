@@ -22,8 +22,7 @@ go.work.sum
 .env
 
 # Custom patterns for ignoring specific files and directories
-go.mod
-go.sum
+
 tmp/
 main.exe
 build-errors.log
