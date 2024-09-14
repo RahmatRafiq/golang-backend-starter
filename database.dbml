@@ -1,0 +1,154 @@
+// Authentication
+Table users {
+  id integer [primary key, increment]
+  reference string [unique]
+  username varchar [unique]
+  email varchar [unique]
+  password varchar
+  jwt_token varchar
+  fcm_token varchar
+  pin varchar
+  created_at timestamp
+  updated_at timestamp
+  deleted_at timestamp
+}
+
+Table roles {
+  id integer [pk, increment]
+  role varchar
+}
+
+Table permission {
+  id integer [pk, increment]
+  permission varchar
+}
+
+Table role_has_permissions {
+  id varchar [pk, increment]
+  role_id integer [ref: > roles.id]
+  permission_id integer [ref: > permission.id]
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table user_has_roles {
+  id varchar [pk, increment]
+  user_id integer [ref: > users.id]
+  role_id integer [ref: > roles.id]
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table user_has_permissions {
+  id varchar [pk, increment]
+  user_id integer [ref: > users.id]
+  permission_id integer [ref: > permission.id]
+  created_at timestamp
+  updated_at timestamp
+}
+// End Authentication
+
+Table profiles {
+  id integer [pk, increment]
+  user_id integer [ref: > users.id]
+  first_name varchar
+  last_name varchar
+  phone varchar
+  address varchar
+  city varchar
+  state varchar
+  country varchar
+  zip varchar
+  created_at timestamp
+  updated_at timestamp
+  deleted_at timestamp
+}
+
+Table categories {
+  id integer [pk, increment]
+  category varchar
+  created_at timestamp
+  updated_at timestamp
+  deleted_at timestamp
+}
+
+// Transaction Unit
+Table stores {
+  id integer [pk, increment]
+  name varchar
+  phone varchar
+  address varchar
+  city varchar
+  state varchar
+  country varchar
+  zip varchar
+  created_at timestamp
+  updated_at timestamp
+  deleted_at timestamp
+}
+
+Table user_has_stores {
+  id varchar [pk, increment]
+  user_id integer [ref: > users.id]
+  store_id integer [ref: > stores.id]
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table products {
+  id integer [pk, increment]
+  reference string [unique]
+  store_id integer [ref: > stores.id]
+  category_id integer [ref: > categories.id]
+  name varchar
+  description text
+  price decimal
+  margin decimal
+  stock integer
+  sold integer
+  images json
+  created_at timestamp
+  updated_at timestamp
+  deleted_at timestamp
+}
+
+Table orders {
+  id integer [pk, increment]
+  reference string [unique]
+  user_id integer [ref: > users.id]
+  store_id integer [ref: > stores.id]
+  total decimal
+  discount decimal
+  status varchar
+  created_at timestamp
+  updated_at timestamp
+  deleted_at timestamp
+}
+
+Table order_details {
+  id integer [pk, increment]
+  order_id integer [ref: > orders.id]
+  product_id integer [ref: > products.id]
+  product json // copy of product
+  quantity integer
+  negotiated_price decimal
+  created_at timestamp
+  updated_at timestamp
+  deleted_at timestamp
+}
+
+Table order_trackings {
+  id integer [pk, increment]
+  reference string [unique]
+  order_id integer [ref: > orders.id]
+  pic varchar
+  checkpoint varchar
+  location varchar
+  coordinates json // {latitude: 0.0000, longitude: 0.0000}
+  status varchar
+  proof_of_delivery json
+  created_at timestamp
+  updated_at timestamp
+}
+// End Transaction Unit
+

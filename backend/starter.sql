@@ -1,0 +1,166 @@
+CREATE TABLE users (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  reference VARCHAR(255) UNIQUE,
+  username VARCHAR(255) UNIQUE,
+  email VARCHAR(255) UNIQUE,
+  password VARCHAR(255),
+  jwt_token VARCHAR(255),
+  fcm_token VARCHAR(255),
+  pin VARCHAR(255),
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  deleted_at TIMESTAMP NULL
+);
+
+CREATE TABLE roles (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  role VARCHAR(255)
+);
+
+CREATE TABLE permission (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  permission VARCHAR(255)
+);
+
+CREATE TABLE role_has_permissions (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  role_id INT,
+  permission_id INT,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (role_id) REFERENCES roles(id),
+  FOREIGN KEY (permission_id) REFERENCES permission(id)
+);
+
+CREATE TABLE user_has_roles (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  user_id INT,
+  role_id INT,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (user_id) REFERENCES users(id),
+  FOREIGN KEY (role_id) REFERENCES roles(id)
+);
+
+CREATE TABLE user_has_permissions (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  user_id INT,
+  permission_id INT,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (user_id) REFERENCES users(id),
+  FOREIGN KEY (permission_id) REFERENCES permission(id)
+);
+
+CREATE TABLE profiles (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  user_id INT,
+  first_name VARCHAR(255),
+  last_name VARCHAR(255),
+  phone VARCHAR(255),
+  address VARCHAR(255),
+  city VARCHAR(255),
+  state VARCHAR(255),
+  country VARCHAR(255),
+  zip VARCHAR(255),
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  deleted_at TIMESTAMP NULL,
+  FOREIGN KEY (user_id) REFERENCES users(id)
+);
+
+CREATE TABLE categories (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  category VARCHAR(255),
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  deleted_at TIMESTAMP NULL
+);
+
+CREATE TABLE stores (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(255),
+  phone VARCHAR(255),
+  address VARCHAR(255),
+  city VARCHAR(255),
+  state VARCHAR(255),
+  country VARCHAR(255),
+  zip VARCHAR(255),
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  deleted_at TIMESTAMP NULL
+);
+
+CREATE TABLE user_has_stores (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  user_id INT,
+  store_id INT,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (user_id) REFERENCES users(id),
+  FOREIGN KEY (store_id) REFERENCES stores(id)
+);
+
+CREATE TABLE products (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  reference VARCHAR(255) UNIQUE,
+  store_id INT,
+  category_id INT,
+  name VARCHAR(255),
+  description TEXT,
+  price DECIMAL(10, 2),
+  margin DECIMAL(10, 2),
+  stock INT,
+  sold INT,
+  images JSON,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  deleted_at TIMESTAMP NULL,
+  FOREIGN KEY (store_id) REFERENCES stores(id),
+  FOREIGN KEY (category_id) REFERENCES categories(id)
+);
+
+CREATE TABLE orders (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  reference VARCHAR(255) UNIQUE,
+  user_id INT,
+  store_id INT,
+  total DECIMAL(10, 2),
+  discount DECIMAL(10, 2),
+  status VARCHAR(255),
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  deleted_at TIMESTAMP NULL,
+  FOREIGN KEY (user_id) REFERENCES users(id),
+  FOREIGN KEY (store_id) REFERENCES stores(id)
+);
+
+CREATE TABLE order_details (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  order_id INT,
+  product_id INT,
+  product JSON,
+  quantity INT,
+  negotiated_price DECIMAL(10, 2),
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  deleted_at TIMESTAMP NULL,
+  FOREIGN KEY (order_id) REFERENCES orders(id),
+  FOREIGN KEY (product_id) REFERENCES products(id)
+);
+
+CREATE TABLE order_trackings (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  reference VARCHAR(255) UNIQUE,
+  order_id INT,
+  pic VARCHAR(255),
+  checkpoint VARCHAR(255),
+  location VARCHAR(255),
+  coordinates JSON,
+  status VARCHAR(255),
+  proof_of_delivery JSON,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  deleted_at TIMESTAMP NULL,
+  FOREIGN KEY (order_id) REFERENCES orders(id)
+);
